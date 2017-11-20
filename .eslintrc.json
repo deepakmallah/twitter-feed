@@ -1,0 +1,21 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "plugins": [
+    "import"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": false
+    }
+  },
+  "rules": {
+    "array-bracket-spacing": ["error", "always"],
+    "object-curly-spacing": ["error", "always"]
+  }
+}

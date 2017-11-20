@@ -1,0 +1,7 @@
+# /node_modules/* and /bower_components/* ignored by default
+.idea
+.project
+.strong-pm
+.env
+.vscode
+dist
