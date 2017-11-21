@@ -1,5 +1,8 @@
 import React from 'react';
+import { Component } from 'react';
 import BuiltUsing from './components/BuiltUsing';
+import fire from '../../utils/fire';
+import { getTweets } from '../../utils/Api';
 
 const technologies = [
   { text: 'WebPack', imgUrl: 'https://s3-us-west-2.amazonaws.com/svgporn.com/logos/webpack.svg' },
@@ -18,4 +21,33 @@ const technologies = [
   },
 ];
 
-export default () => <BuiltUsing technologies={technologies} />;
+class FeedComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.getFeed = this.getFeed.bind(this);
+  }
+
+  getFeed() {
+    if(fire.firebase_.auth().currentUser){
+      getTweets()
+        .then(response => {
+          console.log("getTweets response", response);
+        })
+        .catch(error => console.log(error));
+    }
+  }
+
+  componentDidMount(){
+    setTimeout(()=>{
+      this.getFeed()
+    }, 1000)
+  }
+
+  render() {
+    return (
+      <BuiltUsing technologies={technologies} />
+    );
+  }
+}
+
+export default FeedComponent;
