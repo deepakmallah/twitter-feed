@@ -60,12 +60,16 @@
   "dependencies": {
     "antd": "^2.6.4",
     "babel-plugin-import": "^1.1.0",
+    "body-parser": "^1.18.2",
     "compression": "^1.6.2",
     "express": "^4.14.0",
     "firebase": "^4.6.2",
+    "mongoose": "^4.13.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-helmet": "^4.0.0",
-    "react-router": "^3.0.2"
+    "react-router": "^3.0.2",
+    "superagent": "^3.8.1",
+    "twitter": "^1.7.1"
   }
 }
