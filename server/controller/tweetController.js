@@ -12,7 +12,9 @@ module.exports = (req, res) => {
   if(!params.uid) res.status(500).send('User is missing.');
 
   // var params = {screen_name: 'dpkmallah'};
-  var options = {user_id: params.uid};
+  var options = {user_id: params.uid, count: 2};
+  if(params.max_id) options.max_id = params.max_id;
+
   client.get('statuses/user_timeline', options, function(error, tweets, response) {
     if (!error) {
       res.send(tweets)
