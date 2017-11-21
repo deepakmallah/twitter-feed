@@ -5,7 +5,7 @@
 "use strict";
 
 function route(app) {
-  app.get("/tweets/:uid/:max_id", require('./controller/tweetController'));
+  app.get("/tweets/:uid", require('./controller/tweetController'));
 }
 
 module.exports.route = route;

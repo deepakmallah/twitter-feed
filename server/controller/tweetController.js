@@ -6,6 +6,7 @@ const Twitter = require('twitter');
 
 module.exports = (req, res) => {
   var params = req.params;
+  var query = req.query;
 
   var client = new Twitter(config.twitter);
 
@@ -13,8 +14,9 @@ module.exports = (req, res) => {
 
   // var params = {screen_name: 'dpkmallah'};
   var options = {user_id: params.uid, count: 5};
-  if(params.max_id){
-    options.max_id = params.max_id;
+
+  if(query && query.max_id){
+    options.max_id = query.max_id;
     options.count = options.count + 1;
   }
 
