@@ -14,6 +14,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Connect to our mongo database
 mongoose.connect('mongodb://twitter:twitter!#@ds115446.mlab.com:15446/twitter');
 
+function enableCORSMiddleware (req,res,next) {
+  // You could use * instead of the url below to allow any origin,
+  // but be careful, you're opening yourself up to all sorts of things!
+  res.setHeader('Access-Control-Allow-Origin',  "*");
+  next()
+}
+app.use(enableCORSMiddleware);
+
 /**
  * Template Engine
  */
