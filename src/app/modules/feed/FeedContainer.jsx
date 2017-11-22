@@ -9,6 +9,9 @@ var divStyle = {
   height: "500px",
   overflow: "scroll"
 };
+
+const TWEETS_ALLOWED = 20;
+
 class FeedComponent extends Component {
   constructor(props) {
     super(props);
@@ -18,23 +21,27 @@ class FeedComponent extends Component {
     };
 
     this.handleScroll = this.handleScroll.bind(this);
+    this.getMedia = this.getMedia.bind(this);
   }
 
-  getFeed() {
-    if(fire.firebase_.auth().currentUser){
-      getTweets()
-        .then(response => {
-          console.log("getTweets response", response);
-          if(response.body.length){
-            if(!this.state.tweets.length) this.state.tweets = response.body;
-            this.setState({tweets: this.state.tweets});
+  getFeed(options) {
+    getTweets(options)
+      .then(response => {
+        if(response.body.length){
+          if(!this.state.tweets.length){
+            this.state.tweets = response.body
+          }else{
+            for(var i = 0; i < response.body.length; i++){
+              if(i > 0) this.state.tweets.push(response.body[i]);  //Added this condition of avoid pushing duplicate tweets
+            }
           }
-        })
-        .catch(error => console.log(error));
-    }
+          this.setState({tweets: this.state.tweets});
+        }
+      })
+      .catch(error => console.log(error));
   }
   componentWillUnmount() {
-    const list = ReactDOM.findDOMNode(this.refs["scrollDiv"])
+    const list = ReactDOM.findDOMNode(this.refs["scrollDiv"]);
     list.removeEventListener('scroll', this.handleScroll);
   }
 
@@ -43,10 +50,12 @@ class FeedComponent extends Component {
   }
 
   componentDidMount(){
-    const list = ReactDOM.findDOMNode(this.refs["scrollDiv"])
+    const list = ReactDOM.findDOMNode(this.refs["scrollDiv"]);
     list.addEventListener('scroll', this.handleScroll);
     setTimeout(()=>{
-      this.getFeed()
+      if(fire.firebase_.auth().currentUser) {
+        this.getFeed();
+      }
     }, 1000)
   }
 
@@ -54,14 +63,18 @@ class FeedComponent extends Component {
     var fixed = ReactDOM.findDOMNode(this.refs['targetDiv']).getBoundingClientRect();
     var scroll = ReactDOM.findDOMNode(this.refs['targetDiv1']).getBoundingClientRect();
 
-
     if((fixed.bottom - scroll.bottom) <= 0){
-      console.log("reached")
-      this.state.tweets.push({ text: 'pushed '+this.state.tweets.length, imgUrl: 'https://s3-us-west-2.amazonaws.com/svgporn.com/logos/webpack.svg' });
-      this.setState({tweets: this.state.tweets});
+      if(this.state.tweets.length && (this.state.tweets.length < TWEETS_ALLOWED)){
+        var lastTweet = this.state.tweets[this.state.tweets.length - 1];
+        this.getFeed({max_id: lastTweet.id});
+      }
     }
+  }
 
-    console.log('the scroll things', fixed.bottom,scroll.bottom)
+  getMedia(medias) {
+    if(medias.length){
+      return medias.map((media, index) => <div key={index}><img height={media.sizes.thumb.h}   src={media.media_url} /></div>);
+    }
   }
 
   render() {
@@ -69,9 +82,12 @@ class FeedComponent extends Component {
       <div>
         <div className="scroll-container" style={divStyle} ref="scrollDiv">
           {this.state.tweets.map((tweet, index) =>
-            <li key={tweet.id} className="image-list__item">
-              <div>{tweet.text}</div>
-            </li>
+            <div key={tweet.id} className="image-list__item" style={{border: "1px dotted", padding: "40px", marginBottom: "30px"}}>
+              <p>{tweet.text}</p>
+              <p>{tweet.created_at}</p>
+              {tweet.entities && tweet.entities.media ? this.getMedia(tweet.entities.media) : ""}
+              {tweet.extended_entities && tweet.extended_entities.media ? this.getMedia(tweet.extended_entities.media) : ""}
+            </div>
           )}
           <div ref="targetDiv"></div>
         </div>
