@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from 'antd';
-import BuiltUsing from './components/BuiltUsing';
 import fire from '../../utils/fire';
 import { getTweets } from '../../utils/Api';
 
@@ -88,6 +87,7 @@ class FeedComponent extends Component {
     return new Promise((resolve, reject) => {
       fire.auth().signInWithPopup(provider)
         .then(function(result) {
+          window.location.reload();
           resolve(true);
         })
         .catch(function(error) {
@@ -113,6 +113,8 @@ class FeedComponent extends Component {
   triggerlogOut() {
     if (fire.firebase_.auth().currentUser) {
       fire.firebase_.auth().signOut();
+      this.state.tweets = [];
+      this.setState({tweets: this.state.tweets});
     }
   }
 
