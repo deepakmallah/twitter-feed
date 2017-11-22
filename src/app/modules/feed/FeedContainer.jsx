@@ -116,8 +116,9 @@ class FeedComponent extends Component {
   render() {
     return (
       <div>
-        <div>
+        <div style={{padding: "40px", marginBottom: "30px"}}>
           <Button type="primary" onClick={this.triggerLogin}>Sign in with Twitter</Button>
+          &nbsp;&nbsp;
           <Button onClick={this.triggerlogOut}>Sign out</Button>
         </div>
         <div className="scroll-container" style={divStyle} ref="scrollDiv">
