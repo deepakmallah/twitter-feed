@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Component } from 'react';
 import { Button } from 'antd';
 import BuiltUsing from './components/BuiltUsing';
 import fire from '../../utils/fire';
@@ -128,6 +127,7 @@ class FeedComponent extends Component {
               <p>{tweet.created_at}</p>
               {tweet.entities && tweet.entities.media ? this.getMedia(tweet.entities.media) : ""}
               {tweet.extended_entities && tweet.extended_entities.media ? this.getMedia(tweet.extended_entities.media) : ""}
+              <a href={`/tweet/${tweet.id}`}>Go to Tweet</a>
             </div>
           )}
           <div ref="targetDiv"></div>
