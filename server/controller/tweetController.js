@@ -20,6 +20,8 @@ module.exports = (req, res) => {
     options.count = options.count + 1;
   }
 
+  if(query.count) options.count = 1;
+
   client.get('statuses/user_timeline', options, function(error, tweets, response) {
     if (!error) {
       res.send(tweets)
