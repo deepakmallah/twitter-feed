@@ -3,7 +3,14 @@
 const request = require("request");
 const config = require("../config.json");
 const Twitter = require('twitter');
+const mongoose = require('mongoose');
 
+const schema = new mongoose.Schema({
+  uid: Number,
+  tid: Number,
+  view: Number
+});
+const Reminder = mongoose.model("Reminder", schema);
 module.exports = (req, res) => {
   var params = req.params;
   var query = req.query;
@@ -20,7 +27,10 @@ module.exports = (req, res) => {
     options.count = options.count + 1;
   }
 
-  if(query.count) options.count = 1;
+  if(query.count){
+    options.count = 1;
+    initViewCount()
+  }
 
   client.get('statuses/user_timeline', options, function(error, tweets, response) {
     if (!error) {
@@ -30,4 +40,51 @@ module.exports = (req, res) => {
       res.status(500).send(error.message);
     }
   });
+
+  function initViewCount() {
+    var tid = options.max_id;
+    var uid = options.user_id;
+
+    findAndUpdate(tid, uid)
+      .then(tweetData => {
+        console.log("tweetData", tweetData)
+      })
+      .catch(err => {
+        console.log("tweetData, err", err)
+      })
+  }
+
+  function findAndUpdate(tid, uid) {
+    return new Promise((resolve, reject) => {
+      Reminder.findOne({tid: tid, uid: uid, view: 1}, {}, function (err, tweet) {
+        if (err) return reject(err);
+
+        if(tweet){
+          tweet.view += 1;
+          tweet.save(function (error, updatedTweet) {
+            if (error) reject(error);
+
+            resolve(updatedTweet)
+          });
+        }else{
+          tweetView(tid, uid)
+        }
+      })
+    });
+  }
+
+  function tweetView(tid, uid){
+    var tweetData = {tid: tid, uid: uid, view: 1};
+    return new Promise((resolve, reject) => {
+      var data = new Reminder(tweetData);
+      data.save()
+        .then(item => {
+          resolve(item);
+        })
+        .catch(err => {
+          console.log("err err err err", err)
+          reject(err);
+        });
+    });
+  }
 };
