@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Component } from 'react';
+import { Button } from 'antd';
 import BuiltUsing from './components/BuiltUsing';
 import fire from '../../utils/fire';
 import { getTweets } from '../../utils/Api';
@@ -22,6 +23,9 @@ class FeedComponent extends Component {
 
     this.handleScroll = this.handleScroll.bind(this);
     this.getMedia = this.getMedia.bind(this);
+    this.triggerLogin = this.triggerLogin.bind(this);
+    this.triggerlogOut = this.triggerlogOut.bind(this);
+    this.isLoggedIn = this.isLoggedIn.bind(this);
   }
 
   getFeed(options) {
@@ -77,9 +81,46 @@ class FeedComponent extends Component {
     }
   }
 
+  isLoggedIn(){
+    var provider = new fire.firebase_.auth.TwitterAuthProvider();
+    return new Promise((resolve, reject) => {
+      fire.auth().signInWithPopup(provider)
+        .then(function(result) {
+          resolve(true);
+        })
+        .catch(function(error) {
+          resolve(false);
+        });
+    })
+  }
+
+  triggerLogin() {
+    if (!fire.firebase_.auth().currentUser) {
+      this.isLoggedIn()
+        .then(response => {
+          if(response) this.getFeed();
+        })
+        .catch(err => {
+          console.log("isLoggedIn error", err);
+        })
+    } else {
+      console.log("Already logged in");
+    }
+  }
+
+  triggerlogOut() {
+    if (fire.firebase_.auth().currentUser) {
+      fire.firebase_.auth().signOut();
+    }
+  }
+
   render() {
     return (
       <div>
+        <div>
+          <Button type="primary" onClick={this.triggerLogin}>Sign in with Twitter</Button>
+          <Button onClick={this.triggerlogOut}>Sign out</Button>
+        </div>
         <div className="scroll-container" style={divStyle} ref="scrollDiv">
           {this.state.tweets.map((tweet, index) =>
             <div key={tweet.id} className="image-list__item" style={{border: "1px dotted", padding: "40px", marginBottom: "30px"}}>

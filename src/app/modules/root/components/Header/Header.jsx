@@ -11,48 +11,11 @@ const { Header } = Layout;
 class HeaderComponent extends Component {
   constructor(props) {
     super(props);
-
-    this.triggerLogin = this.triggerLogin.bind(this);
-    this.triggerlogOut = this.triggerlogOut.bind(this);
   }
 
   componentWillMount(){
     console.log("componentWillMount componentWillMount")
   }
-
-  triggerLogin() {
-    if (!fire.firebase_.auth().currentUser) {
-      // var provider = fire.firebase_.auth.TwitterAuthProvider();
-      var provider = new fire.firebase_.auth.TwitterAuthProvider();
-
-      // [START signin]
-      fire.auth().signInWithPopup(provider)
-        .then(function(result) {
-          //Todo Add the Event after use is logged in
-          var token = result.credential.accessToken;
-          var secret = result.credential.secret;
-          // The signed-in user info.
-          var user = result.user;
-          // [START_EXCLUDE]
-          console.log("user", user);
-          console.log("token", token);
-          console.log("secret", secret);
-
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
-    } else {
-      console.log("Already logged in");
-    }
-  }
-
-  triggerlogOut() {
-    if (fire.firebase_.auth().currentUser) {
-      fire.firebase_.auth().signOut();
-    }
-  }
-
 
   render() {
     return (
@@ -64,12 +27,6 @@ class HeaderComponent extends Component {
           </Menu.Item>
           <Menu.Item key="2">
             <Link to="/feed">Feed</Link>
-          </Menu.Item>
-          <Menu.Item key="3">
-            <Button type="primary" onClick={this.triggerLogin}>Sign in with Twitter</Button>
-          </Menu.Item>
-          <Menu.Item key="4">
-            <Button onClick={this.triggerlogOut}>Sign out</Button>
           </Menu.Item>
         </Menu>
       </Header>
