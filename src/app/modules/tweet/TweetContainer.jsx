@@ -33,7 +33,8 @@ class FeedComponent extends Component {
   componentDidMount(){
     setTimeout(()=>{
       if(fire.firebase_.auth().currentUser) {
-        this.getFeed({max_id: this.tuid, count: 1});
+        var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
+        this.getFeed({max_id: this.tuid, count: 1, uid: uid});
       }
     }, 1000)
   }

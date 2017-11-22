@@ -15,6 +15,7 @@ const TWEETS_ALLOWED = 20;
 class FeedComponent extends Component {
   constructor(props) {
     super(props);
+
     this.getFeed = this.getFeed.bind(this);
     this.state = {
       tweets: []
@@ -57,7 +58,8 @@ class FeedComponent extends Component {
     list.addEventListener('scroll', this.handleScroll);
     setTimeout(()=>{
       if(fire.firebase_.auth().currentUser) {
-        this.getFeed();
+        var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
+        this.getFeed({uid: uid});
       }
     }, 1000)
   }
@@ -69,7 +71,8 @@ class FeedComponent extends Component {
     if((fixed.bottom - scroll.bottom) <= 0){
       if(this.state.tweets.length && (this.state.tweets.length < TWEETS_ALLOWED)){
         var lastTweet = this.state.tweets[this.state.tweets.length - 1];
-        this.getFeed({max_id: lastTweet.id});
+        var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
+        this.getFeed({max_id: lastTweet.id, uid: uid});
       }
     }
   }

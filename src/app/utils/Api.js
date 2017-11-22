@@ -7,8 +7,10 @@ export function getTweets(options) {
   return new Promise((resolve, reject) => {
     var query = "";
     if(options && options.max_id) query = `max_id=${options.max_id}`;
+    if(options && options.count) query += `&count=${options.count}`;
+
     request
-      .get( `http://local.meaww.com:3000/tweets/985997336?${query}` )
+      .get( `http://local.meaww.com:3000/tweets/${options.uid}?${query}` )
       .set( 'Accept', 'application/json' )
       .then(response => {
         resolve(response);
