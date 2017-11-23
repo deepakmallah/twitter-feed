@@ -36,7 +36,7 @@ module.exports = (req, res) => {
 
         findAndUpdate(tid)
           .then(tweetData => {
-            tweets[0]["viewCount"] = tweetData.view;
+            tweets[0]["tweetData"] = tweetData;
             res.send(tweets)
           })
           .catch(err => {
