@@ -2,6 +2,7 @@
  * Created by deepak on 21/11/17.
  */
 import request from 'superagent';
+const API_SEVER = window.location.origin;
 
 export function getTweets(options) {
   return new Promise((resolve, reject) => {
@@ -10,7 +11,7 @@ export function getTweets(options) {
     if(options && options.count) query += `&count=${options.count}`;
 
     request
-      .get( `http://local.meaww.com:3000/tweets/${options.uid}?${query}` )
+      .get( `${API_SEVER}/tweets/${options.uid}?${query}` )
       .set( 'Accept', 'application/json' )
       .then(response => {
         resolve(response);
@@ -25,7 +26,7 @@ export function vote(options) {
     if(!options.tid || !options.type) return reject("parameters missing.");
 
     request
-      .get( `http://local.meaww.com:3000/vote/${options.tid}/${options.type}` )
+      .get( `${API_SEVER}/vote/${options.tid}/${options.type}` )
       .set( 'Accept', 'application/json' )
       .then(response => {
         resolve(response);
