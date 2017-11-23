@@ -29,34 +29,38 @@ module.exports = (req, res) => {
 
   if(query.count){
     options.count = 1;
-    initViewCount()
+
+
   }
 
   client.get('statuses/user_timeline', options, function(error, tweets, response) {
     if (!error) {
-      res.send(tweets)
+
+      if(options.count === 1){
+        var tid = options.max_id;
+        var uid = options.user_id;
+
+        findAndUpdate(tid, uid)
+          .then(tweetData => {
+            tweets[0]["viewCount"] = tweetData.view;
+            res.send(tweets)
+          })
+          .catch(err => {
+            console.log("tweetData, err", err)
+            res.status(500).send(err.message);
+          })
+      }else{
+        res.send(tweets)
+      }
     }else {
       console.log("err err", error);
       res.status(500).send(error.message);
     }
   });
 
-  function initViewCount() {
-    var tid = options.max_id;
-    var uid = options.user_id;
-
-    findAndUpdate(tid, uid)
-      .then(tweetData => {
-        console.log("tweetData", tweetData)
-      })
-      .catch(err => {
-        console.log("tweetData, err", err)
-      })
-  }
-
   function findAndUpdate(tid, uid) {
     return new Promise((resolve, reject) => {
-      Reminder.findOne({tid: tid, uid: uid, view: 1}, {}, function (err, tweet) {
+      Reminder.findOne({tid: tid, uid: uid}, {}, function (err, tweet) {
         if (err) return reject(err);
 
         if(tweet){
@@ -68,6 +72,12 @@ module.exports = (req, res) => {
           });
         }else{
           tweetView(tid, uid)
+            .then(tweetview => {
+              resolve(tweetview)
+            })
+            .catch(err => {
+              reject(err)
+            })
         }
       })
     });
