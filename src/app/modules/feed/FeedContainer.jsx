@@ -4,6 +4,7 @@ import { Button } from 'antd';
 import fire from '../../utils/fire';
 import { getTweets } from '../../utils/Api';
 
+import styles from "./FeedContainer.css"
 var divStyle = {
   height: "500px",
   overflow: "scroll"
@@ -17,7 +18,8 @@ class FeedComponent extends Component {
 
     this.getFeed = this.getFeed.bind(this);
     this.state = {
-      tweets: []
+      tweets: [],
+      loader: false
     };
 
     this.handleScroll = this.handleScroll.bind(this);
@@ -39,6 +41,7 @@ class FeedComponent extends Component {
             }
           }
           this.setState({tweets: this.state.tweets});
+          this.setState({loader: false});
         }
       })
       .catch(error => console.log(error));
@@ -57,6 +60,7 @@ class FeedComponent extends Component {
     list.addEventListener('scroll', this.handleScroll);
     setTimeout(()=>{
       if(fire.firebase_.auth().currentUser) {
+        this.setState({loader: true});
         var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
         this.getFeed({uid: uid});
       }
@@ -72,6 +76,7 @@ class FeedComponent extends Component {
         var lastTweet = this.state.tweets[this.state.tweets.length - 1];
         var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
         this.getFeed({max_id: lastTweet.id, uid: uid});
+        this.setState({loader: true});
       }
     }
   }
@@ -121,6 +126,7 @@ class FeedComponent extends Component {
   render() {
     return (
       <div>
+        { this.state.loader ? <div className={styles.loader}></div> : null }
         <div style={{padding: "40px", marginBottom: "30px"}}>
           <Button type="primary" onClick={this.triggerLogin}>Sign in with Twitter</Button>
           &nbsp;&nbsp;

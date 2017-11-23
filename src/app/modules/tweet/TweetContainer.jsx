@@ -4,12 +4,15 @@ import { Button } from 'antd';
 import fire from '../../utils/fire';
 import { getTweets } from '../../utils/Api';
 
+import styles from '../feed/FeedContainer.css'
+
 class FeedComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tweets: []
+      tweets: [],
+      loader: false
     };
 
     this.getFeed = this.getFeed.bind(this);
@@ -25,6 +28,7 @@ class FeedComponent extends Component {
           console.log("response.body", response.body)
           this.state.tweets = response.body
           this.setState({tweets: this.state.tweets});
+          this.setState({loader: false});
         }
       })
       .catch(error => console.log(error));
@@ -35,6 +39,7 @@ class FeedComponent extends Component {
       if(fire.firebase_.auth().currentUser) {
         var uid = fire.firebase_.auth().currentUser ? fire.firebase_.auth().currentUser.providerData[0]["uid"] : 0;
         this.getFeed({max_id: this.tuid, count: 1, uid: uid});
+        this.setState({loader: true});
       }
     }, 1000)
   }
@@ -61,6 +66,7 @@ class FeedComponent extends Component {
   render() {
     return (
       <div>
+        { this.state.loader ? <div className={styles.loader}></div> : null }
         {this.state.tweets.map((tweet, index) =>
           <div key={tweet.id} className="image-list__item" style={{border: "1px dotted", padding: "40px", marginBottom: "30px"}}>
             {tweet.viewCount ? <p>View Count: {tweet.viewCount}</p> : ""}
