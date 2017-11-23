@@ -13,6 +13,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to our mongo database
 mongoose.connect('mongodb://twitter:twitter!#@ds115446.mlab.com:15446/twitter');
+const schema = new mongoose.Schema({
+  tid: Number,
+  view: Number,
+  up: Number,
+  down: Number
+});
+const TweetModel = mongoose.model("tweets", schema);
+app.set('tweetModel', TweetModel);
 
 function enableCORSMiddleware (req,res,next) {
   // You could use * instead of the url below to allow any origin,

@@ -3,18 +3,12 @@
 const request = require("request");
 const config = require("../config.json");
 const Twitter = require('twitter');
-const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
-  tid: Number,
-  view: Number,
-  upVote: Number,
-  downVote: Number
-});
-const Reminder = mongoose.model("Reminder", schema);
 module.exports = (req, res) => {
   var params = req.params;
   var query = req.query;
+
+  const TweetModel = req.app.get('tweetModel');
 
   var client = new Twitter(config.twitter);
 
@@ -60,7 +54,7 @@ module.exports = (req, res) => {
 
   function findAndUpdate(tid) {
     return new Promise((resolve, reject) => {
-      Reminder.findOne({tid: tid}, {}, function (err, tweet) {
+      TweetModel.findOne({tid: tid}, {}, function (err, tweet) {
         if (err) return reject(err);
 
         if(tweet){
@@ -86,7 +80,7 @@ module.exports = (req, res) => {
   function tweetView(tid){
     var tweetData = {tid: tid, view: 1};
     return new Promise((resolve, reject) => {
-      var data = new Reminder(tweetData);
+      var data = new TweetModel(tweetData);
       data.save()
         .then(item => {
           resolve(item);
