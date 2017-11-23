@@ -69,7 +69,7 @@ class FeedComponent extends Component {
         { this.state.loader ? <div className={styles.loader}></div> : null }
         {this.state.tweets.map((tweet, index) =>
           <div key={tweet.id} className="image-list__item" style={{border: "1px dotted", padding: "40px", marginBottom: "30px"}}>
-            {tweet.viewCount ? <p>View Count: {tweet.viewCount}</p> : ""}
+            {tweet.viewCount ? <p style={{float: "right", fontWeight: "bold"}}>View Count: {tweet.viewCount}</p> : ""}
             <p>{tweet.text}</p>
             <p>{tweet.created_at}</p>
             {tweet.entities && tweet.entities.media ? this.getMedia(tweet.entities.media) : ""}
