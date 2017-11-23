@@ -18,3 +18,18 @@ export function getTweets(options) {
       .catch(error => reject(error));
   });
 }
+
+export function vote(options) {
+  return new Promise((resolve, reject) => {
+
+    if(!options.tid || !options.type) return reject("parameters missing.");
+
+    request
+      .get( `http://local.meaww.com:3000/vote/${options.tid}/${options.type}` )
+      .set( 'Accept', 'application/json' )
+      .then(response => {
+        resolve(response);
+      })
+      .catch(error => reject(error));
+  });
+}

@@ -29,10 +29,12 @@ module.exports = (req, res) => {
 
         if(!tweet) return reject({"message": "Tweet data not found."});
 
-        if(tweet[type]){
-          tweet[type] += 1;
+        if(type === "up"){
+          tweet.vote += 1;
+        }else if((type === "down") && (tweet.vote > 0)){
+          tweet.vote -= 1;
         }else{
-          tweet[type] = 1;
+          tweet.vote = 0;
         }
 
         tweet.save(function (error, updatedTweet) {

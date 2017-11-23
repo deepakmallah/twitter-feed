@@ -16,8 +16,7 @@ mongoose.connect('mongodb://twitter:twitter!#@ds115446.mlab.com:15446/twitter');
 const schema = new mongoose.Schema({
   tid: Number,
   view: Number,
-  up: Number,
-  down: Number
+  vote: Number
 });
 const TweetModel = mongoose.model("tweets", schema);
 app.set('tweetModel', TweetModel);
