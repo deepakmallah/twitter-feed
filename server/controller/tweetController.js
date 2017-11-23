@@ -6,9 +6,10 @@ const Twitter = require('twitter');
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
-  uid: Number,
   tid: Number,
-  view: Number
+  view: Number,
+  upVote: Number,
+  downVote: Number
 });
 const Reminder = mongoose.model("Reminder", schema);
 module.exports = (req, res) => {
@@ -38,9 +39,8 @@ module.exports = (req, res) => {
 
       if(options.count === 1){
         var tid = options.max_id;
-        var uid = options.user_id;
 
-        findAndUpdate(tid, uid)
+        findAndUpdate(tid)
           .then(tweetData => {
             tweets[0]["viewCount"] = tweetData.view;
             res.send(tweets)
@@ -58,9 +58,9 @@ module.exports = (req, res) => {
     }
   });
 
-  function findAndUpdate(tid, uid) {
+  function findAndUpdate(tid) {
     return new Promise((resolve, reject) => {
-      Reminder.findOne({tid: tid, uid: uid}, {}, function (err, tweet) {
+      Reminder.findOne({tid: tid}, {}, function (err, tweet) {
         if (err) return reject(err);
 
         if(tweet){
@@ -71,7 +71,7 @@ module.exports = (req, res) => {
             resolve(updatedTweet)
           });
         }else{
-          tweetView(tid, uid)
+          tweetView(tid)
             .then(tweetview => {
               resolve(tweetview)
             })
@@ -83,8 +83,8 @@ module.exports = (req, res) => {
     });
   }
 
-  function tweetView(tid, uid){
-    var tweetData = {tid: tid, uid: uid, view: 1};
+  function tweetView(tid){
+    var tweetData = {tid: tid, view: 1};
     return new Promise((resolve, reject) => {
       var data = new Reminder(tweetData);
       data.save()
