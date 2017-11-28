@@ -2,7 +2,7 @@
  * Created by deepak on 21/11/17.
  */
 import request from 'superagent';
-const API_SEVER = window.location.hostname;
+const API_SEVER = window.location.origin;
 
 export function getTweets(options) {
   return new Promise((resolve, reject) => {

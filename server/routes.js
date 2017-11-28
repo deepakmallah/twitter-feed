@@ -5,8 +5,8 @@
 "use strict";
 
 function route(app) {
-  app.get("/tweets/:uid", require('./controller/tweetController'));
-  app.get("/vote/:tid/:type", require('./controller/voteController'));
+  app.get("/api/tweets/:uid", require('./controller/tweetController'));
+  app.get("/api/vote/:tid/:type", require('./controller/voteController'));
 }
 
 module.exports.route = route;
