@@ -106,7 +106,7 @@ class FeedComponent extends Component {
           <div key={tweet.id} className="image-list__item" style={{border: "1px dotted", padding: "40px", marginBottom: "30px"}}>
             <div style={{float: "right"}}>
               {(tweet.tweetData && tweet.tweetData.view) ? <p style={{fontWeight: "bold"}}>View Count: {tweet.tweetData.view}</p> : ""}
-              {(tweet.tweetData && tweet.tweetData.vote) ? <p style={{fontWeight: "bold"}}>View Count: {tweet.tweetData.vote}</p> : ""}
+              Vote Count: {(tweet.tweetData && tweet.tweetData.vote) ? <p style={{fontWeight: "bold"}}>{tweet.tweetData.vote}</p> : 0}
               <br />
               <Button type="primary" onClick={this.upvote}>Up Vote</Button>
               &nbsp;&nbsp;
