@@ -12,4 +12,7 @@ $ npm run start
 
 # creates a production build
 $ npm run build
+
+# start server
+$ node server/server.js
 ```
